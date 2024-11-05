@@ -1,5 +1,3 @@
-##############################                                THE FINAL ONE(Terminal)                      ######################################
-
 from collections import deque  # For BFS queue
 import time  # For measuring how long solutions take
 import math  # For calculating distances
