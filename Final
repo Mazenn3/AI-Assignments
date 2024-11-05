@@ -1,3 +1,5 @@
+##############################                                THE FINAL ONE(Terminal)                      ######################################
+
 from collections import deque  # For BFS queue
 import time  # For measuring how long solutions take
 import math  # For calculating distances
@@ -10,22 +12,22 @@ class PuzzleState:
     Think of this as taking a snapshot of the board at any moment.
     """
 
-    def init(self, state, parent=None, move=None, depth=0, cost=0):
+    def __init__(self, state, parent=None, move=None, depth=0, cost=0):
         self.state = tuple(state)  # The actual board configuration (0 represents blank)
         self.parent = parent  # Previous board state
         self.move = move  # What move led to this state
         self.depth = depth  # How many moves from start
         self.cost = cost  # For A* search
 
-    def eq(self, other):
+    def __eq__(self, other):
         # Two states are equal if they have the same board configuration
         return self.state == other.state
 
-    def hash(self):
+    def __hash__(self):
         # Needed to use states in sets (for keeping track of visited states)
         return hash(self.state)
 
-    def lt(self, other):
+    def __lt__(self, other):
         # Needed for A* to compare states
         return self.cost < other.cost
 
@@ -51,7 +53,7 @@ class PuzzleState:
             moves.append('RIGHT')
 
         return moves
-
+    #ميثود بتخليه يتحرك 
     def apply_move(self, move):
         """Make a move and return new board state."""
         new_state = list(self.state)
@@ -73,8 +75,8 @@ class PuzzleState:
 
     def print_state(self):
         """Show the board in a nice grid format."""
-        print("-" * 13)
-        for i in range(0, 9, 3):
+        print("-" * 13) #عشان يفصل مبينهم بخط متقطع و بيدي شكل حلو
+        for i in range(0, 9, 3): #دي لوب بترص الارقام
             print(f"| {self.state[i]} | {self.state[i + 1]} | {self.state[i + 2]} |")
             print("-" * 13)
 
@@ -107,7 +109,7 @@ def euclidean_distance(state):
             current_col = i % 3
             goal_row = tile // 3
             goal_col = tile % 3
-            distance += math.sqrt((current_row - goal_row)  2 + (current_col - goal_col)  2)
+            distance += math.sqrt((current_row - goal_row) ** 2 + (current_col - goal_col) ** 2)
     return distance
 
 
@@ -115,7 +117,7 @@ def is_goal(state):
     """Check if we've reached the solved state (0-8 in order)."""
     return state.state == tuple(range(9))
 
-> Mazen:
+
 def get_solution_path(state):
     """
     Trace back from goal to start to get solution path.
@@ -128,13 +130,13 @@ def get_solution_path(state):
         current = current.parent
     return list(reversed(path))
 
-
+#الميثود بتاعت ال BFS
 def bfs(initial_state):
     """
     Breadth-First Search: Explores all moves at current depth before going deeper.
     Guarantees shortest solution but might take longer.
     """
-    start_time = time.time()
+    start_time = time.time() #بيحسب وقت الرن بتاع BFS لوحده
     frontier = deque([PuzzleState(initial_state)])  # Queue of states to explore
     explored = set()  # Keep track of states we've seen
     nodes_expanded = 0
@@ -180,18 +182,18 @@ def bfs(initial_state):
 
     return None
 
-
+#المثود بتاعت ال DFS
 def dfs(initial_state):
     """
     Depth-First Search: Explores as far as possible along each path before backtracking.
     Might not find the shortest solution but could be faster sometimes.
     """
-    start_time = time.time()
+    start_time = time.time() #عشان تحسب وقت رن الالجوريزم لوحده
     frontier = [PuzzleState(initial_state)]  # Stack of states to explore
     explored = set()  # Keep track of states we've seen
     nodes_expanded = 0
 
-    while frontier:
+    while frontier:#بيحفظ هو كان فين قبل كده عشان ميرجعلهاش تاني
         current_state = frontier.pop()  # Get next state to explore
 
         if current_state.state in explored:
@@ -224,8 +226,7 @@ def dfs(initial_state):
                 "running_time": time.time() - start_time
             }
 
-> Mazen:
-# Try all possible moves from current state (in reverse order for DFS)
+        # Try all possible moves from current state (in reverse order for DFS)
         for move in reversed(current_state.get_possible_moves()):
             new_state = current_state.apply_move(move)
             if new_state.state not in explored:
@@ -287,7 +288,7 @@ def a_star(initial_state, heuristic_func):
 
     return None
 
-
+#بيهندل اي حاجه اليوزر مكن يدخلها
 def validate_input(numbers):
     """Make sure the puzzle input is valid."""
     if len(numbers) != 9:
@@ -325,7 +326,7 @@ def main():
         print("3. A* Search with Manhattan Distance")
         print("4. A* Search with Euclidean Distance")
         print("5. Exit")
-
+    #error handling
         try:
             choice = int(input("\nEnter your choice (1-5): "))
 
@@ -333,8 +334,7 @@ def main():
                 print("\nExiting program...")
                 break
 
-> Mazen:
-if choice not in [1, 2, 3, 4]:
+            if choice not in [1, 2, 3, 4]:
                 print("Invalid choice! Please enter a number between 1 and 5.")
                 continue
 
@@ -360,5 +360,6 @@ if choice not in [1, 2, 3, 4]:
             print("Invalid input! Please enter a number.")
 
 
-if name == "main":
+
+if __name__ == "__main__":
     main()
